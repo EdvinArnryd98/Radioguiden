@@ -1,21 +1,18 @@
+import json
 import urllib.request
-import xmltodict
 
 
-api_url = 'https://api.sr.se/api/v2/channels'
-
+api_url = 'https://api.sr.se/api/v2/channels?format=json'
 response = urllib.request.urlopen(api_url)
-
 answer = response.read()
+json_dict = json.loads(answer)
 
-parsed_answer = xmltodict.parse(answer)
-
-channels = parsed_answer["sr"]["channels"]["channel"]
+channels = json_dict["channels"]
 
 #Prints out all stations
 number = 0
 for x in channels:
-    print(x["@name"], number)
+    print(x["name"], number)
     number += 1
 
 running = 1
@@ -27,12 +24,11 @@ def pick_station(choice):
         print("Wrong input! Try again")
 
     else:
-        print(channels[choice])
-        return channels[choice]["@id"]
+        print(channels[choice]["id"], channels[choice]["name"])
+        return channels[choice]["id"]
 
 
 if __name__ == '__main__':
     while running:
-        station = int(input("Pick a station with it's number: "))
+        station = int(input("Pick a station with its number: "))
         current_station = pick_station(station)
-
