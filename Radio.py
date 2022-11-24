@@ -2,6 +2,15 @@ import json
 import urllib.request
 
 
+class User:
+  def __init__(self, id, page):
+    self.id = id
+    self.page = page
+
+
+user = User(0, 0)
+
+
 def get_channels():
     api_url = 'https://api.sr.se/api/v2/channels?format=json'
     response = urllib.request.urlopen(api_url)
@@ -36,7 +45,11 @@ def user_command(choice):
     elif choice < number_of_channels:
         # print the table of selected channel
         print(channels[choice]["id"], channels[choice]["name"])
+        user.id = channels[choice]["id"]
         return channels[choice]["id"]
+
+    elif choice == 10:
+        print("next page")
 
     else:
         print("Choice is out of bounds!")
@@ -48,4 +61,5 @@ if __name__ == '__main__':
 
     while running:
         station = int(input("Pick a station with its number: "))
+        # user command function needs to always run at the end of the loop
         current_station = user_command(station)
