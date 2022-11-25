@@ -138,7 +138,6 @@ if __name__ == '__main__':
     print("                 ")
     print("*****************")
 
-
     while running:
         station = int(input("Pick a command: "))
 
