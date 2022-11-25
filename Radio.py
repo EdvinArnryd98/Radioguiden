@@ -140,8 +140,4 @@ if __name__ == '__main__':
 
     while running:
         station = int(input("Pick a command: "))
-
-        # Build a function that resets the pages, if the number is 11, set user.page to 1
-        # Create a menu at the beginning of the program to tell the user what different numbers do
-
         current_station = user_command(station)
