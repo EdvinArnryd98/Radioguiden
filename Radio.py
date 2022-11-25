@@ -1,16 +1,16 @@
 import json
 import urllib.request
-# import datetime
 import time
 
 
 class User:
-  def __init__(self, id, page):
+  def __init__(self, id, page, max_page):
     self.id = id
     self.page = page
+    self.max_page = max_page
 
 
-user = User(0, 1)
+user = User(0, 1, 0)
 
 
 def get_channels():
@@ -38,13 +38,21 @@ def count_channels(channels):
 
 def user_command(choice):
     channels = get_channels()
+
     number_of_channels = count_channels(get_channels())
     if choice < 0:
         print("Wrong input! Try again")
 
+    elif user.page == user.max_page:
+        print(user.max_page)
+        user.page = user.page - 1
+        print("That was the max pages")
+
     elif choice < number_of_channels:
         scheduled_episodes(channels[choice]["id"])
         user.id = channels[choice]["id"]
+        user.page = 1
+        user.max_page = total_pages(user.id)
         return channels[choice]["id"]
 
     elif choice == 10:
@@ -52,6 +60,17 @@ def user_command(choice):
         save_id = user.id
         next_pages(save_id, user.page)
         print("page:", user.page)
+
+    elif choice == 11:
+        if user.page < 0:
+            print(user.max_page)
+            user.page = user.page + 1
+            print("No less then 1!")
+        else:
+            user.page = user.page - 1
+            save_id = user.id
+            next_pages(save_id, user.page)
+            print("page:", user.page)
 
     else:
         print("Choice is out of bounds!")
@@ -74,6 +93,19 @@ def scheduled_episodes(id):
         print(date + " " + x["title"])
         number += 1
 
+    pages = json_dict["pagination"]["totalpages"]
+    return pages
+
+
+def total_pages(id):
+    api_url = f"https://api.sr.se/v2/scheduledepisodes?channelid={id}&format=json"
+    response = urllib.request.urlopen(api_url)
+    answer = response.read()
+    json_dict = json.loads(answer)
+
+    pages = json_dict["pagination"]["totalpages"]
+    return pages
+
 
 def next_pages(id, schedul_page):
     api_url = f"https://api.sr.se/v2/scheduledepisodes?channelid={id}&format=json&page={schedul_page}"
@@ -89,20 +121,28 @@ def next_pages(id, schedul_page):
         date_date = my_num_1
         date = time.strftime('%m/%d/%Y %H:%M:%S',
                              time.gmtime(date_date/1000.))
-        print(date)
-        print(x["title"])
+        print(date + " " + x["title"])
         number += 1
 
 
 if __name__ == '__main__':
     running = 1
     print_channels(get_channels())
+    print("*****************")
+    print("                 ")
+    print("Welcome to sr API!")
+    print("Please type a command below")
+    print("0-9 = pick a channel")
+    print("10 = increment pages")
+    print("11 = decrement pages")
+    print("                 ")
+    print("*****************")
+
 
     while running:
-        station = int(input("Pick a station with its number: "))
+        station = int(input("Pick a command: "))
 
         # Build a function that resets the pages, if the number is 11, set user.page to 1
         # Create a menu at the beginning of the program to tell the user what different numbers do
-
 
         current_station = user_command(station)
