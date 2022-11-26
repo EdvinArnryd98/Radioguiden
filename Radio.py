@@ -43,11 +43,6 @@ def user_command(choice):
     if choice < 0:
         print("Wrong input! Try again")
 
-    elif user.page == user.max_page:
-        print(user.max_page)
-        user.page = user.page - 1
-        print("That was the max pages")
-
     elif choice < number_of_channels:
         scheduled_episodes(channels[choice]["id"])
         user.id = channels[choice]["id"]
@@ -56,16 +51,18 @@ def user_command(choice):
         return channels[choice]["id"]
 
     elif choice == 10:
-        user.page = user.page + 1
-        save_id = user.id
-        next_pages(save_id, user.page)
-        print("page:", user.page)
+        if user.page == user.max_page:
+            print("That was the max pages")
+        else:
+            user.page = user.page + 1
+            save_id = user.id
+            next_pages(save_id, user.page)
+            print("page:", user.page)
 
     elif choice == 11:
-        if user.page < 0:
-            print(user.max_page)
-            user.page = user.page + 1
-            print("No less then 1!")
+        if user.page <= 1:
+            user.page = 1
+            print("No less than 1!")
         else:
             user.page = user.page - 1
             save_id = user.id
@@ -128,7 +125,6 @@ def next_pages(id, schedul_page):
 if __name__ == '__main__':
     running = 1
     print_channels(get_channels())
-    print("*****************")
     print("                 ")
     print("Welcome to sr API!")
     print("Please type a command below")
@@ -136,7 +132,6 @@ if __name__ == '__main__':
     print("10 = increment pages")
     print("11 = decrement pages")
     print("                 ")
-    print("*****************")
 
     while running:
         station = int(input("Pick a command: "))
