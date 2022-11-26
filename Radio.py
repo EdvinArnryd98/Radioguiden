@@ -125,13 +125,13 @@ def next_pages(id, schedul_page):
 if __name__ == '__main__':
     running = 1
     print_channels(get_channels())
-    print("                 ")
+    print("")
     print("Welcome to sr API!")
     print("Please type a command below")
     print("0-9 = pick a channel")
     print("10 = increment pages")
     print("11 = decrement pages")
-    print("                 ")
+    print("")
 
     while running:
         station = int(input("Pick a command: "))
